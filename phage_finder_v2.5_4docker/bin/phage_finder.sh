@@ -17,8 +17,8 @@ Bin="$(cd -- "$(dirname "$0")" && pwd)"
 phome=${Bin%/*}
 base=`pwd`
 # set the path to your BLAST+ package
-src="/scratch/dfouts/bin"
-blastbin="${src}/ncbi-blast-2.14.0+/bin"
+src="/opt"
+blastbin="${src}/ncbi-blast-*/bin"
 
 prefix=$1
 
