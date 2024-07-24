@@ -86,7 +86,7 @@ prefix=$1
         echo "  find ncRNA sequences ..."
         Z=`$src/esl-seqstat $prefix.con | perl -ne 'chomp; if (/^Total # residues:\s+(\d+)/) {$n = $1; $Z=($n*2)/1000000; print "$Z\n";}'`
         #echo "Z = $Z"        
-        $src/cmscan -Z $Z --cut_ga --rfam --nohmmonly --tblout $base/ncRNA_cmscan.out --fmt 2 $phome/RfamDB/Rfam_PhageFinder.cm $prefix.con > $prefix.cmscan
+        /usr/bin/cmscan -Z $Z --cut_ga --rfam --nohmmonly --tblout $base/ncRNA_cmscan.out --fmt 2 $phome/RfamDB/Rfam_PhageFinder.cm $prefix.con > $prefix.cmscan
     fi
 
     ## find the phage
