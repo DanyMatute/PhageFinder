@@ -84,7 +84,7 @@ prefix=$1
     then
         ## find select ncRNAs
         echo "  find ncRNA sequences ..."
-        Z=`/opt/easel/miniapps/esl-seqstat $prefix.con | perl -ne 'chomp; if (/^Total # residues:\s+(\d+)/) {$n = $1; $Z=($n*2)/1000000; print "$Z\n";}'`
+        Z=`esl-seqstat $prefix.con | perl -ne 'chomp; if (/^Total # residues:\s+(\d+)/) {$n = $1; $Z=($n*2)/1000000; print "$Z\n";}'`
         #echo "Z = $Z"        
         /usr/bin/cmscan -Z $Z --cut_ga --rfam --nohmmonly --tblout $base/ncRNA_cmscan.out --fmt 2 $phome/RfamDB/Rfam_PhageFinder.cm $prefix.con > $prefix.cmscan
     fi
