@@ -43,9 +43,11 @@ task_blast(){
     echo "  >>  BLASTp DONE"
 }
 
+#tRNAscan-SE -B -Q -o tRNAscan.out BatchB/Analysis/BVBRC-genome-analysis/CCI100_genome_analysis/annotation_files/annotation.feature_protein.fasta
 task_trnascan(){
     echo "  >>  Running tRNA-Scan"
-    blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out ncbi.out -max_target_seqs 5 -num_threads 8 
+    #blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out ncbi.out -max_target_seqs 5 -num_threads 8 
+    tRNAscan-SE -B -Q -o tRNAscan.out "$1"
     echo "  >>  tRNA-Scan DONE"
 }
 
@@ -118,7 +120,7 @@ main() {
 
     task_hmmsearch "${faa_file}"
     task_blast "${faa_file}"
-    [[ "${transcan_file}" == "true" ]] && task_trnascan "${faa_file}"
+    [[ "${transcan_file}" == "true" ]] && task_trnascan "${faa_file}" > /dev/null 2>&1
     
     return 0
 
