@@ -33,23 +33,35 @@ task_hmmsearch(){
     while IFS= read -r i; do
         echo "${i}, ${1}"
         hmmsearch /opt/PhageFinder/phage_finder_v2.5_4docker/PHAGE_HMM3s_dir/"$i".HMM "$1"
-    done < /opt/PhageFinder/phage_finder_v2.5_4docker/hmm3.lst > combined.hmm3
+    done < /opt/PhageFinder/phage_finder_v2.5_4docker/hmm3.lst > "${2}/combined.hmm3"
     echo "  >>  hmmsearch DONE"
 }
 
 task_blast(){
     echo "  >>  Running BLASTp"
-    blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out ncbi.out -max_target_seqs 5 -num_threads 8 
+    blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out "${2}/ncbi.out" -max_target_seqs 5 -num_threads 8 
     echo "  >>  BLASTp DONE"
 }
 
-#tRNAscan-SE -B -Q -o tRNAscan.out BatchB/Analysis/BVBRC-genome-analysis/CCI100_genome_analysis/annotation_files/annotation.feature_protein.fasta
 task_trnascan(){
     echo "  >>  Running tRNA-Scan"
     #blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out ncbi.out -max_target_seqs 5 -num_threads 8 
-    tRNAscan-SE -B -Q -o tRNAscan.out "$1"
+    tRNAscan-SE -B -Q -o "${2}/tRNAscan.out" "$1"
     echo "  >>  tRNA-Scan DONE"
 }
+
+task_aragorn(){
+    echo "  >>  Running Aragorn"
+    /opt/Aragron/aragorn -m -o "${2}/tmRNA_aragorn.out" "$1";
+    echo "  >>  Aragorn DONE"
+}
+
+task_phagefinder (){
+    echo "  >>  Running Phage_Finder_v2.5"
+    /opt/PhageFinder/phage_finder_v2.5_4docker/bin/Phage_Finder_v2.5.pl -t "${1}/ncbi.out" -i "$2" -r "${1}/tRNAscan.out" -n "${1}/tmRNA_aragorn.out" -A "$3" -S
+    echo "  >>  Phage_Finder_v2.5 DONE"
+}
+
 
 main() {
     # Positional Arguments
@@ -118,9 +130,11 @@ main() {
     echo  "outputfile_location: ${outputfile_location}"
     [[ "${transcan_file}" == "true" ]] && echo "transcan_file: ${transcan_file}"
 
-    task_hmmsearch "${faa_file}"
-    task_blast "${faa_file}"
-    [[ "${transcan_file}" == "true" ]] && task_trnascan "${faa_file}" > /dev/null 2>&1
+    task_hmmsearch "${faa_file}" "${outputfile_location}"
+    task_blast "${faa_file}" "${outputfile_location}"
+    task_aragorn "${fna_file}" "${outputfile_location}"
+    [[ "${transcan_file}" == "true" ]] && task_trnascan "${fna_file}" "${outputfile_location}"
+    task_phagefinder "${outputfile_location}" "${phagefinder_info_file}" "${fna_file}"
     
     return 0
 
