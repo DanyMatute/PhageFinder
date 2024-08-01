@@ -95,10 +95,10 @@ else {
     $btabpath = $basedir;
 }
 ## if no value for option t (name of btab file), quit with help menu with error message
-if (($opt_t) && (-e "$btabpath/$opt_t" == 1)) {
-    $btabfile = "$btabpath/$opt_t";
+if (($opt_t) && (-e "$opt_t" == 1)) {
+    $btabfile = "$opt_t";
 }
-elsif (-z "$btabpath/$opt_t") { # if file is present, but not BLAST results, then don't bother looking for prophages
+elsif (-z "$opt_t") { # if file is present, but not BLAST results, then don't bother looking for prophages
     &write_log("5", "No BLASTP results, aborting prophage finding"); # added 03/07/14 by dfouts since small contigs may not have BLAST matches
 }
 else {
@@ -106,8 +106,8 @@ else {
     &option_help;
 }
 ## if no value for option t (name of info file), quit with help menu with error message
-if (($opt_i)  && (-e "$basedir/$opt_i" == 1) && (-z "$basedir/$opt_i" == 0)) {
-    $infofile = "$basedir/$opt_i";
+if (($opt_i)  && (-e "$opt_i" == 1) && (-z "$opt_i" == 0)) {
+    $infofile = "$opt_i";
 }
 else {
     print "FATAL error: Must specify -i <phage_finder_info.txt file>\n";
@@ -2319,14 +2319,14 @@ print "MAIN:  HMMer $HMMversion output detected ...\n" if ($DEBUG);
 
 if ($HMMversion == "2") {
    @filenames = ("phage_exclude_v6.lst",
-		 "core_hmm.lst",
-		 "lysin_holin_hmm.lst",
-		 "tails_hmm.lst",
-		 "large_term_hmm.lst",
-		 "small_term_hmm.lst",
-		 "portal_hmm.lst",
-		 "protease_hmm.lst",
-		 "capsid_hmm.lst",
+		 "core_hmm3.lst",
+		 "lysin_holin_hmm3.lst",
+		 "tails_hmm3.lst",
+		 "large_term_hmm3.lst",
+		 "small_term_hmm3.lst",
+		 "portal_hmm3.lst",
+		 "protease_hmm3.lst",
+		 "capsid_hmm3.lst",
 		 "Small_term_v2.lst",
 		 "Large_term_v2.lst",
 		 "Portal_v2.lst",
