@@ -171,7 +171,8 @@ sub get_HMM_size_trusted_noise  {
     my $i = "";
     
     if ($HMMversion == "2") {
-	push (@files, "$phome/HMM_master.lst");
+    print "HERE!! $phome\n";
+	push (@files, "/opt/PhageFinder/phage_finder_v2.5_4docker/HMM3_master.lst");
 	push (@files, "$phome/HMM_master_FRAG.lst");
 	
 	push (@model, "GLOCAL");
