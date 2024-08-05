@@ -70,7 +70,7 @@ prefix=$1
     then
         ## find tRNAs
         echo "  find tRNA sequences ..."
-        $src/tRNAscan-SE -B -o tRNAscan.out $base/$contigfile > /dev/null 2>&1
+        $src/tRNAscan-SE  --thread 1 -B -o tRNAscan.out $base/$contigfile > /dev/null 2>&1
     fi
 
     if [ ! -e $base/tmRNA_aragorn.out ] && [ -e $base/$contigfile ] # if tRNAscan.out file not present, and contig file present, then search
