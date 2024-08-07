@@ -70,14 +70,14 @@ prefix=$1
     then
         ## find tRNAs
         echo "  find tRNA sequences ..."
-        $src/tRNAscan-SE  --thread 1 -B -o tRNAscan.out $base/$contigfile > /dev/null 2>&1
+        tRNAscan-SE  --thread 1 -B -Q -o $base/tRNAscan.out $base/$contigfile > /dev/null 2>&1
     fi
 
     if [ ! -e $base/tmRNA_aragorn.out ] && [ -e $base/$contigfile ] # if tRNAscan.out file not present, and contig file present, then search
     then
         ## find tmRNAs
         echo "  find tmRNA sequences ..."
-        $src/aragorn -m -o tmRNA_aragorn.out $base/$contigfile
+        aragorn -m -o $base/tmRNA_aragorn.out $base/$contigfile
     fi
 
     if [ ! -e $base/ncRNA_cmscan.out ] && [ -e $base/$contigfile ] # if ncRNA_cmscan.out file not present, and contig file present, then search
