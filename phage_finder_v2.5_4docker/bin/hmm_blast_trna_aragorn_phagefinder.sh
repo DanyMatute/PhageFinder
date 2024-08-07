@@ -47,8 +47,8 @@ task_blast(){
 task_trnascan(){
     echo  ""
     echo "  RUNNING  tRNA-Scan"
-    #blastp -db /opt/PhageFinder/phage_finder_v2.5_4docker/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query "$1" -out ncbi.out -max_target_seqs 5 -num_threads 8 
-    tRNAscan-SE --thread 1 -B -Q -o "${2}/tRNAscan.out" "$1"
+    echo "${2}/tRNAscan.out" "$1"
+    tRNAscan-SE --thread 3 -B -Q -o "${2}/tRNAscan.out" $1
     echo "  > tRNA-Scan DONE"
 }
 
@@ -64,6 +64,12 @@ task_phagefinder (){
     echo "  RUNNING Phage_Finder_v2.5"
     /opt/PhageFinder/phage_finder_v2.5_4docker/bin/Phage_Finder_v2.5.pl -t "${1}/ncbi.out" -i "$2" -r "${1}/tRNAscan.out" -n "${1}/tmRNA_aragorn.out" -A "$3" -S
     echo "  > Phage_Finder_v2.5 DONE"
+}
+
+task_linearfigures () {
+    echo  ""
+    echo "  GENERATING Linear Figures"    
+    /opt/PhageFinder/phage_finder_v2.5_4docker/bin/LinearDisplay_detailed.pl -A "${1}/strict_dir/PFPR.frag" -F "${1}/strict_dir/PFPR.att" -L -nt > "${1}/strict_dir/PFPR_linear.fig"
 }
 
 task_validationn (){
@@ -85,6 +91,7 @@ main() {
     echo  ""
     echo  "STARTING PHAGE FINDER SCRIPT"
     echo  ""
+
     # Positional Arguments
     local faa_file=
     local fna_file=
@@ -94,7 +101,6 @@ main() {
     # Flag arguments
     local transcan_file="false"
     local position=0
-
 
     # Count all the args passed, and loop while we have all the args.
     while [[ "${#}" -gt 0 ]]; do   
@@ -139,7 +145,7 @@ main() {
         esac
     done
 
-    # Validation 1
+    # Validation 1: checking all the arguments are in the command
     [[ -z "${outputfile_location}" ]] && printf "    !!  Input Missing\n\n" >&2 && Help >&2 && exit 1
 
     # Echo inputs
@@ -149,7 +155,7 @@ main() {
     echo  "  INPUT outputfile_location: ${outputfile_location}"
     echo  ""
 
-    # Validation 2
+    # Validation 2: checking input files exsist and are not-empty. 
     echo  ""
     task_validationn "$faa_file" 
     task_validationn "$fna_file" 
@@ -167,6 +173,8 @@ main() {
     task_aragorn "${fna_file}" "${outputfile_location}"
     [[ "${transcan_file}" == "true" ]] && task_trnascan "${fna_file}" "${outputfile_location}"
     task_phagefinder "${outputfile_location}" "${phagefinder_info_file}" "${fna_file}"
+    mv strict_dir "${outputfile_location}/strict_dir" 
+    task_linearfigures "${outputfile_location}"
     echo  ""
     echo  "PHAGE FINDER SCRIPT DONE"
     echo  ""
