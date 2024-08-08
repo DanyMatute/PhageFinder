@@ -53,7 +53,7 @@ prefix=$1
         ## do NCBI BLASTP searches
         echo "  BLASTing $pepfile against the Phage DB ..."
 	# NCBI BLAST+ code provided by Dr. Camille Hankel at Dartmouth #
-	$blastbin/blastp -db $phome/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query $pepfile -out ncbi.out -max_target_seqs 5 -num_threads 2
+	/usr/bin/blastp -db $phome/DB/phage_03_25_19.db -outfmt 6 -evalue 0.001 -query $pepfile -out ncbi.out -max_target_seqs 5 -num_threads 2
         #old#blastall -p blastp -d $phome/DB/phage_01_03_14_internal.db -m 8 -e 0.001 -i $pepfile -o ncbi.out -v 4 -b 4 -a 2 -F F
     fi
     if [ -s $base/$prefix.con ]
@@ -77,7 +77,7 @@ prefix=$1
     then
         ## find tmRNAs
         echo "  find tmRNA sequences ..."
-        aragorn -m -o $base/tmRNA_aragorn.out $base/$contigfile
+        /opt/Aragron/aragorn -m -o $base/tmRNA_aragorn.out $base/$contigfile
     fi
 
     if [ ! -e $base/ncRNA_cmscan.out ] && [ -e $base/$contigfile ] # if ncRNA_cmscan.out file not present, and contig file present, then search
@@ -86,7 +86,7 @@ prefix=$1
         echo "  find ncRNA sequences ..."
         Z=`esl-seqstat $prefix.con | perl -ne 'chomp; if (/^Total # residues:\s+(\d+)/) {$n = $1; $Z=($n*2)/1000000; print "$Z\n";}'`
         #echo "Z = $Z"        
-        /usr/bin/cmscan -Z $Z --cut_ga --rfam --nohmmonly --tblout $base/ncRNA_cmscan.out --fmt 2 $phome/RfamDB/Rfam_PhageFinder.cm $prefix.con > $prefix.cmscan
+        /usr/local/bin/cmscan -Z $Z --cut_ga --rfam --nohmmonly --tblout $base/ncRNA_cmscan.out --fmt 2 $phome/RfamDB/Rfam_PhageFinder.cm $prefix.con > $prefix.cmscan
     fi
 
     ## find the phage
