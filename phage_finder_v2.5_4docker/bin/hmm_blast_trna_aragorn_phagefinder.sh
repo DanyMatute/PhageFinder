@@ -48,7 +48,7 @@ task_trnascan(){
     echo  ""
     echo "  RUNNING  tRNA-Scan"
     echo "${2}/tRNAscan.out" "$1"
-    tRNAscan-SE --thread 3 -B -Q -o "${2}/tRNAscan.out" $1
+    tRNAscan-SE --thread 8 -B -Q -o "${2}/tRNAscan.out" $1
     echo "  > tRNA-Scan DONE"
 }
 
